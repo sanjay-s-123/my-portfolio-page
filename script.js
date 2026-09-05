@@ -250,6 +250,108 @@ let lastScrollTop = 0;
 let isAnimatingIronMan = false;
 let isAnimatingWeb = false;
 
+// Sound Effects Setup (Using Web Audio API for synthesized sounds)
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSound(type) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    
+    const time = audioCtx.currentTime;
+    
+    if (type === 'cinematicStart') {
+        // Deep Cinematic Boom
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(150, time);
+        osc.frequency.exponentialRampToValueAtTime(0.01, time + 2);
+        gain.gain.setValueAtTime(1, time);
+        gain.gain.exponentialRampToValueAtTime(0.01, time + 2);
+        osc.start(time);
+        osc.stop(time + 2);
+    } 
+    else if (type === 'cinematicSection') {
+        // Swoosh / Wind
+        const bufferSize = audioCtx.sampleRate * 2; 
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+        
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(100, time);
+        filter.frequency.linearRampToValueAtTime(1000, time + 1);
+        filter.frequency.linearRampToValueAtTime(100, time + 2);
+        
+        const gain = audioCtx.createGain();
+        gain.gain.setValueAtTime(0, time);
+        gain.gain.linearRampToValueAtTime(0.3, time + 1);
+        gain.gain.linearRampToValueAtTime(0, time + 2);
+        
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+        noise.start(time);
+    }
+    else if (type === 'ironManLaunch') {
+        // Repulsor / Jet
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(50, time);
+        osc.frequency.linearRampToValueAtTime(300, time + 2.5);
+        gain.gain.setValueAtTime(0, time);
+        gain.gain.linearRampToValueAtTime(0.4, time + 0.5);
+        gain.gain.linearRampToValueAtTime(0, time + 2.5);
+        osc.start(time);
+        osc.stop(time + 2.5);
+    }
+    else if (type === 'portalOpen') {
+        // Magical Chime
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(800, time);
+        osc.frequency.exponentialRampToValueAtTime(3000, time + 1);
+        gain.gain.setValueAtTime(0, time);
+        gain.gain.linearRampToValueAtTime(0.3, time + 0.2);
+        gain.gain.linearRampToValueAtTime(0, time + 1);
+        osc.start(time);
+        osc.stop(time + 1);
+    }
+    else if (type === 'webShoot') {
+        // Thwip
+        const bufferSize = audioCtx.sampleRate * 0.2; 
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+        
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'highpass';
+        filter.frequency.setValueAtTime(2000, time);
+        filter.frequency.linearRampToValueAtTime(5000, time + 0.2);
+        
+        const gain = audioCtx.createGain();
+        gain.gain.setValueAtTime(0.5, time);
+        gain.gain.exponentialRampToValueAtTime(0.01, time + 0.2);
+        
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+        noise.start(time);
+    }
+}
+
 function showComicText(text, x, y) {
     const el = document.getElementById('comic-text-effect');
     if (!el) return;
@@ -286,12 +388,14 @@ function triggerIronManFly() {
     portal.classList.remove('open');
     void portal.offsetWidth;
     portal.classList.add('open');
+    playSound('portalOpen');
 
     // Show "WHOOOOSH!" text center screen
     showComicText('WHOOOOSH!', window.innerWidth / 2 - 100, window.innerHeight / 2 - 50);
 
     // Phase 2: 0.4s delay, then launch Iron Man from bottom
     setTimeout(() => {
+        playSound('ironManLaunch');
         // Reset to bottom
         ironMan.style.transition = 'none';
         ironMan.style.bottom = '-200px';
@@ -350,6 +454,7 @@ function triggerWebShoot(scrollX, scrollY) {
     web.classList.remove('shooting');
     void web.offsetWidth;
     web.classList.add('shooting');
+    playSound('webShoot');
 
     // Show "THWIP!" text near where web appeared
     const webTexts = ['THWIP!', 'SWISH!', 'SNAP!'];
@@ -408,6 +513,7 @@ cinematicBtn.addEventListener('click', () => {
     // Add bars with slight delay for dramatic effect
     setTimeout(() => {
         document.body.classList.add('cinematic-bars-in');
+        playSound('cinematicStart');
     }, 100);
 
     startCinematicSequence();
@@ -456,6 +562,7 @@ function startCinematicSequence() {
             sectionEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
             
             // Show dramatic title
+            playSound('cinematicSection');
             cineTitle.textContent = sec.title;
             cineTitle.classList.add('show');
             sectionEl.classList.add('focus');
