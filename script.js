@@ -242,3 +242,144 @@ document.addEventListener('click', (e) => {
         }, 600);
     }
 });
+
+// ============================================
+// COMIC SCROLL ANIMATIONS - Iron Man & Web
+// ============================================
+let lastScrollTop = 0;
+let isAnimatingIronMan = false;
+let isAnimatingWeb = false;
+
+function showComicText(text, x, y) {
+    const el = document.getElementById('comic-text-effect');
+    if (!el) return;
+    el.textContent = text;
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+    el.classList.remove('show');
+    void el.offsetWidth;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 1000);
+}
+
+function spawnSmokePuff(x, y) {
+    const trail = document.querySelector('.smoke-trail');
+    if (!trail) return;
+    const puff = document.createElement('div');
+    puff.classList.add('smoke-puff');
+    // Slight random horizontal drift
+    const drift = (Math.random() - 0.5) * 16;
+    puff.style.left = (x + drift - 11) + 'px';
+    puff.style.top  = (y - 11) + 'px';
+    trail.appendChild(puff);
+    setTimeout(() => puff.remove(), 1200);
+}
+
+function triggerIronManFly() {
+    const ironMan = document.querySelector('.iron-man-scroll');
+    const portal  = document.querySelector('.comic-portal');
+    if (!ironMan || !portal) return;
+
+    isAnimatingIronMan = true;
+
+    // Phase 1: Open portal at top-right
+    portal.classList.remove('open');
+    void portal.offsetWidth;
+    portal.classList.add('open');
+
+    // Show "WHOOOOSH!" text center screen
+    showComicText('WHOOOOSH!', window.innerWidth / 2 - 100, window.innerHeight / 2 - 50);
+
+    // Phase 2: 0.4s delay, then launch Iron Man from bottom
+    setTimeout(() => {
+        // Reset to bottom
+        ironMan.style.transition = 'none';
+        ironMan.style.bottom = '-200px';
+        ironMan.style.right  = '10%';
+
+        ironMan.classList.remove('flying');
+        void ironMan.offsetWidth;
+        ironMan.classList.add('flying');
+
+        // Phase 2b: spawn smoke puffs by tracking Iron Man's position
+        const duration = 2100; // ms
+        const interval = 60;   // spawn a puff every 60ms
+        let elapsed = 0;
+        const smokeTimer = setInterval(() => {
+            elapsed += interval;
+            if (elapsed > duration) { clearInterval(smokeTimer); return; }
+            const rect = ironMan.getBoundingClientRect();
+            if (rect.width > 0) {
+                // Emit from the center-bottom of Iron Man
+                spawnSmokePuff(
+                    rect.left + rect.width / 2,
+                    rect.bottom
+                );
+            }
+        }, interval);
+    }, 400);
+
+    // Phase 3: When he reaches the top show "GONE!"
+    setTimeout(() => {
+        const portalRect = portal.getBoundingClientRect();
+        showComicText('GONE!', portalRect.left - 60, portalRect.top + 30);
+    }, 1900);
+
+    // Phase 4: Clean up
+    setTimeout(() => {
+        ironMan.classList.remove('flying');
+        portal.classList.remove('open');
+        isAnimatingIronMan = false;
+    }, 2800);
+}
+
+function triggerWebShoot(scrollX, scrollY) {
+    const web = document.querySelector('.spider-web-scroll');
+    if (!web) return;
+
+    isAnimatingWeb = true;
+
+    // Pick a random edge position
+    const onLeft = Math.random() > 0.5;
+    const xPos = onLeft ? Math.random() * 15 : 75 + Math.random() * 15; // vw %
+    const yPos = 10 + Math.random() * 70; // vh %
+
+    web.style.left = xPos + 'vw';
+    web.style.top = yPos + 'vh';
+
+    web.classList.remove('shooting');
+    void web.offsetWidth;
+    web.classList.add('shooting');
+
+    // Show "THWIP!" text near where web appeared
+    const webTexts = ['THWIP!', 'SWISH!', 'SNAP!'];
+    const txt = webTexts[Math.floor(Math.random() * webTexts.length)];
+    const px = (xPos / 100) * window.innerWidth;
+    const py = (yPos / 100) * window.innerHeight;
+    showComicText(txt, px, py - 60);
+
+    setTimeout(() => {
+        isAnimatingWeb = false;
+        web.classList.remove('shooting');
+    }, 900);
+}
+
+window.addEventListener('scroll', () => {
+    if (!document.body.classList.contains('comic-mode')) return;
+
+    const st = window.pageYOffset || document.documentElement.scrollTop;
+
+    if (st > lastScrollTop + 15) {
+        // Scrolling DOWN → web shoot
+        if (!isAnimatingWeb) {
+            triggerWebShoot();
+        }
+    } else if (st < lastScrollTop - 15) {
+        // Scrolling UP → Iron Man flies up through portal
+        if (!isAnimatingIronMan) {
+            triggerIronManFly();
+        }
+    }
+
+    lastScrollTop = st <= 0 ? 0 : st;
+});

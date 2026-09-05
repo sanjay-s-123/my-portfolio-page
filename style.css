@@ -810,6 +810,144 @@ body.comic-mode .comic-anim {
     100% { transform: translate(-50%, -50%) scale(2) rotate(0deg); opacity: 0; }
 }
 
+/* Scroll Animations - Comic Mode */
+.iron-man-scroll {
+    position: fixed;
+    right: 10%;
+    bottom: -200px;
+    width: 150px;
+    z-index: 9999;
+    pointer-events: none;
+    display: none;
+}
+.iron-man-scroll img {
+    width: 100%;
+    height: auto;
+    mix-blend-mode: multiply; /* Removes white background on light backgrounds */
+}
+body.comic-mode .iron-man-scroll { display: block; }
+
+.iron-man-scroll.flying {
+    animation: flyUpToPortal 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes flyUpToPortal {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    60% { transform: translateY(-70vh) scale(0.8); opacity: 1; }
+    80% { transform: translateY(-90vh) scale(0.2); opacity: 1; }
+    100% { transform: translateY(-90vh) scale(0); opacity: 0; }
+}
+
+.smoke-trail {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 22px;
+    pointer-events: none;
+    z-index: 9997;
+}
+.smoke-puff {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,200,200,0.9), rgba(100,100,100,0.3));
+    filter: blur(5px);
+    position: absolute;
+    animation: puffFade 1.2s ease-out forwards;
+    transform-origin: center;
+}
+@keyframes puffFade {
+    0%   { opacity: 0.9; transform: scale(0.4); }
+    40%  { opacity: 0.7; transform: scale(1.2); }
+    100% { opacity: 0;   transform: scale(2.5) translateY(-20px); }
+}
+
+.spider-web-scroll {
+    position: fixed;
+    z-index: 9998;
+    pointer-events: none;
+    display: none;
+    width: 60px;
+    opacity: 0;
+    transform-origin: top left;
+}
+.spider-web-scroll img {
+    width: 100%;
+    height: auto;
+    filter: invert(1) drop-shadow(0 0 4px rgba(255,255,255,0.8));
+}
+body.comic-mode .spider-web-scroll { display: block; }
+
+.spider-web-scroll.shooting {
+    animation: shootWebImg 1s ease-out forwards;
+}
+
+@keyframes shootWebImg {
+    0%   { transform: scale(0) rotate(-30deg); opacity: 1; }
+    30%  { transform: scale(1.1) rotate(5deg);  opacity: 1; }
+    70%  { transform: scale(1) rotate(0deg);    opacity: 0.85; }
+    100% { transform: scale(1.2) rotate(10deg); opacity: 0; }
+}
+
+/* Comic Portal - Doctor Strange Style */
+.comic-portal {
+    position: fixed;
+    top: 5%;
+    right: 10%;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 8px dashed #ff9800;
+    background: transparent;
+    box-shadow: 
+        0 0 20px 8px rgba(255, 106, 0, 0.8),
+        inset 0 0 20px 8px rgba(255, 106, 0, 0.8);
+    z-index: 9998;
+    pointer-events: none;
+    transform: scale(0);
+    opacity: 0;
+    display: none;
+}
+body.comic-mode .comic-portal { display: block; }
+
+.comic-portal.open {
+    animation: portalOpen 2.7s forwards;
+}
+
+@keyframes portalOpen {
+    0%   { transform: scale(0) rotate(0deg);    opacity: 0; box-shadow: 0 0 10px 4px #ff9800, inset 0 0 10px 4px #ff9800; }
+    15%  { transform: scale(1.1) rotate(90deg); opacity: 1; box-shadow: 0 0 40px 20px rgba(255,106,0,0.8), inset 0 0 40px 20px rgba(255,106,0,0.8); }
+    50%  { transform: scale(1) rotate(400deg);  opacity: 1; }
+    85%  { transform: scale(1) rotate(700deg);  opacity: 1; }
+    100% { transform: scale(0) rotate(800deg);  opacity: 0; }
+}
+
+/* Text Effect for Scrolls */
+.comic-text-effect {
+    position: fixed;
+    font-family: 'Bangers', cursive;
+    font-size: 4rem;
+    color: #ffeb3b;
+    text-shadow: 3px 3px 0 #000, -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 6px 6px 0 #e30022;
+    z-index: 10000;
+    pointer-events: none;
+    opacity: 0;
+    transform: scale(0);
+    display: none;
+}
+body.comic-mode .comic-text-effect { display: block; }
+
+.comic-text-effect.show {
+    animation: textPop 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes textPop {
+    0% { transform: scale(0) rotate(-10deg); opacity: 1; }
+    30% { transform: scale(1.2) rotate(10deg); opacity: 1; }
+    70% { transform: scale(1) rotate(0deg); opacity: 1; }
+    100% { transform: scale(1.5); opacity: 0; }
+}
+
 /* Responsive */
 @media (max-width: 991px) {
     .hero .container {
