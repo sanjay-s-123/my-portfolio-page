@@ -13,6 +13,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Outfit:wght@400;600;800&display=swap"
         rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -41,6 +42,15 @@
                 <li><a href="#projects">Projects</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
+            <div class="theme-switch-wrapper">
+                <label class="theme-switch" for="checkbox">
+                    <input type="checkbox" id="checkbox" />
+                    <div class="slider round">
+                        <i class="fa-solid fa-sun icon-normal"></i>
+                        <i class="fa-solid fa-bolt icon-comic"></i>
+                    </div>
+                </label>
+            </div>
             <div class="menu-toggle">
                 <div class="bar"></div>
             </div>
@@ -116,27 +126,65 @@
                         <i data-lucide="code-2"></i>
                         <h3>Programming</h3>
                         <ul>
-                            <li><i class="fa-brands fa-python skill-icon"></i>Python</li>
-                            <li><i class="fa-solid fa-microchip skill-icon"></i>Embedded C/C++</li>
-                            <li><i class="fa-brands fa-js skill-icon"></i>JavaScript</li>
+                            <li class="python-skill"><i class="fa-brands fa-python skill-icon"></i>Python
+                                <div class="comic-snake">
+                                    <svg viewBox="0 0 100 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path class="snake-body" d="M0,10 Q10,0 20,10 T40,10 T60,10 T80,10 T100,10" fill="none" stroke="#eab308" stroke-width="4" stroke-linecap="round" />
+                                    </svg>
+                                </div>
+                            </li>
+                            <li class="skill-item"><i class="fa-solid fa-microchip skill-icon"></i>Embedded C/C++
+                                <div class="comic-anim comic-gear">
+                                    <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="6" fill="none" stroke="#555" stroke-width="3" stroke-dasharray="4 2" class="gear-spin"/></svg>
+                                </div>
+                            </li>
+                            <li class="skill-item"><i class="fa-brands fa-js skill-icon"></i>JavaScript
+                                <div class="comic-anim comic-lightning">
+                                    <svg viewBox="0 0 20 20"><path d="M12,2 L4,12 L10,12 L8,20 L16,10 L10,10 Z" fill="#eab308" class="lightning-flash"/></svg>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                     <div class="skill-category glass reveal">
                         <i data-lucide="layout"></i>
                         <h3>Web Dev</h3>
                         <ul>
-                            <li><i class="fa-brands fa-html5 skill-icon"></i>HTML5 / CSS3</li>
-                            <li><i class="fa-solid fa-layer-group skill-icon"></i> Flutter Basic</li>
-                            <li><i class="fa-solid fa-flask skill-icon"></i>Flask / Web</li>
+                            <li class="skill-item"><i class="fa-brands fa-html5 skill-icon"></i>HTML5 / CSS3
+                                <div class="comic-anim comic-brush">
+                                    <svg viewBox="0 0 20 20"><path d="M2,18 L6,14 C6,14 10,16 14,12 C18,8 18,2 18,2 C18,2 12,2 8,6 C4,10 6,14 6,14 L2,18 Z" fill="#e30022" class="brush-paint"/></svg>
+                                </div>
+                            </li>
+                            <li class="skill-item"><i class="fa-solid fa-layer-group skill-icon"></i> Flutter Basic
+                                <div class="comic-anim comic-wing">
+                                    <svg viewBox="0 0 20 20"><path d="M2,10 L10,2 L18,10 L10,18 Z" fill="#0047b3" class="wing-flap"/></svg>
+                                </div>
+                            </li>
+                            <li class="skill-item"><i class="fa-solid fa-flask skill-icon"></i>Flask / Web
+                                <div class="comic-anim comic-bubbles">
+                                    <svg viewBox="0 0 20 20"><circle cx="10" cy="16" r="3" fill="#00f2ff" class="bubble-rise"/><circle cx="14" cy="12" r="2" fill="#00f2ff" class="bubble-rise b-delay"/></svg>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                     <div class="skill-category glass reveal">
                         <i data-lucide="cpu"></i>
                         <h3>Interests</h3>
                         <ul>
-                            <li><i class="fa-solid fa-brain skill-icon"></i>Artificial Intelligence</li>
-                            <li><i class="fa-solid fa-robot skill-icon"></i>Machine Learning</li>
-                            <li><i class="fa-solid fa-wifi skill-icon"></i>Internet of Things (IoT)</li>
+                            <li class="skill-item"><i class="fa-solid fa-brain skill-icon"></i>Artificial Intelligence
+                                <div class="comic-anim comic-brain">
+                                    <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="6" fill="none" stroke="#7000ff" stroke-width="2" class="brain-pulse"/></svg>
+                                </div>
+                            </li>
+                            <li class="skill-item"><i class="fa-solid fa-robot skill-icon"></i>Machine Learning
+                                <div class="comic-anim comic-robot">
+                                    <svg viewBox="0 0 20 20"><rect x="4" y="6" width="12" height="8" rx="2" fill="#333"/><circle cx="8" cy="10" r="2" fill="#e30022" class="robot-eye"/></svg>
+                                </div>
+                            </li>
+                            <li class="skill-item"><i class="fa-solid fa-wifi skill-icon"></i>Internet of Things (IoT)
+                                <div class="comic-anim comic-wifi">
+                                    <svg viewBox="0 0 20 20"><path d="M4,10 Q10,4 16,10" fill="none" stroke="#0047b3" stroke-width="2" class="wifi-wave"/></svg>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                 </div>

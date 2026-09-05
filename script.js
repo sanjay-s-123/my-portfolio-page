@@ -194,3 +194,51 @@ window.onload = () => {
         });
     }
 };
+
+// Theme Toggle Logic
+const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+
+function switchTheme(e) {
+    if (e.target.checked) {
+        document.body.classList.add('comic-mode');
+        localStorage.setItem('theme', 'comic');
+    } else {
+        document.body.classList.remove('comic-mode');
+        localStorage.setItem('theme', 'normal');
+    }    
+}
+
+if (toggleSwitch) {
+    toggleSwitch.addEventListener('change', switchTheme, false);
+
+    // Check Local Storage for Theme
+    const currentTheme = localStorage.getItem('theme');
+    if (currentTheme) {
+        if (currentTheme === 'comic') {
+            toggleSwitch.checked = true;
+            document.body.classList.add('comic-mode');
+        }
+    }
+}
+
+// Comic Click Burst Animation
+document.addEventListener('click', (e) => {
+    // Only show burst if comic mode is active and it's not a click on the theme switch
+    if (document.body.classList.contains('comic-mode') && !e.target.closest('.theme-switch-wrapper')) {
+        const bursts = ['BAM!', 'POW!', 'ZAP!', 'BOOM!', 'WHAM!'];
+        const burstText = bursts[Math.floor(Math.random() * bursts.length)];
+        
+        const burstEl = document.createElement('div');
+        burstEl.classList.add('comic-burst');
+        burstEl.textContent = burstText;
+        burstEl.style.left = e.clientX + 'px';
+        burstEl.style.top = e.clientY + 'px';
+        
+        document.body.appendChild(burstEl);
+        
+        // Remove element after animation finishes
+        setTimeout(() => {
+            burstEl.remove();
+        }, 600);
+    }
+});
