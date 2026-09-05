@@ -1,3 +1,13 @@
+// Desktop Warning Banner Dismiss
+const closeWarningBtn = document.getElementById('close-warning');
+const desktopWarning = document.getElementById('desktop-warning');
+if(closeWarningBtn && desktopWarning) {
+    closeWarningBtn.addEventListener('click', () => {
+        desktopWarning.classList.add('hidden');
+        desktopWarning.style.display = 'none';
+    });
+}
+
 // Custom Cursor
 const cursor = document.querySelector('.cursor');
 const follower = document.querySelector('.cursor-follower');
@@ -490,6 +500,38 @@ window.addEventListener('scroll', () => {
 });
 
 // ============================================
+// 3D TILT EFFECT — Normal Mode Only
+// ============================================
+function initTiltEffect() {
+    const tiltCards = document.querySelectorAll('.tilt-card, .skill-category, .project-card');
+    tiltCards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            if (document.body.classList.contains('comic-mode')) return;
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const cx = rect.width / 2;
+            const cy = rect.height / 2;
+            const rotX = ((y - cy) / cy) * -8;
+            const rotY = ((x - cx) / cx) * 8;
+            card.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-8px)`;
+            card.style.transition = 'transform 0.1s ease';
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateY(0)';
+            card.style.transition = 'transform 0.5s ease';
+        });
+    });
+}
+
+// Initialize tilt after DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTiltEffect);
+} else {
+    initTiltEffect();
+}
+
+// ============================================
 // CINEMATIC MODE
 // ============================================
 const cinematicBtn = document.getElementById('cinematic-btn');
@@ -542,11 +584,12 @@ function exitCinematic() {
 
 function startCinematicSequence() {
     const sections = [
-        { id: 'home', title: 'PART 1: THE ORIGIN' },
-        { id: 'about', title: 'PART 2: THE HERO' },
-        { id: 'skills', title: 'PART 3: THE ARSENAL' },
-        { id: 'projects', title: 'PART 4: THE MISSIONS' },
-        { id: 'contact', title: 'PART 5: THE SIGNAL' }
+        { id: 'home',     title: 'CHAPTER 1: THE ORIGIN' },
+        { id: 'about',    title: 'CHAPTER 2: THE HERO' },
+        { id: 'skills',   title: 'CHAPTER 3: THE ARSENAL' },
+        { id: 'projects', title: 'CHAPTER 4: THE MISSIONS' },
+        { id: 'ongoing',  title: 'CHAPTER 5: ONGOING MISSIONS' },
+        { id: 'contact',  title: 'CHAPTER 6: THE SIGNAL' }
     ];
 
     let delay = 1000;
