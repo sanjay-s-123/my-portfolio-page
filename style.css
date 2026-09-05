@@ -988,3 +988,100 @@ body.comic-mode .comic-text-effect { display: block; }
         padding: 2rem;
     }
 }
+
+/* Cinematic Button */
+.cinematic-btn {
+    display: none;
+    background: #ffeb3b;
+    border: 3px solid #000;
+    color: #000;
+    font-size: 1.2rem;
+    padding: 5px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-right: 15px;
+    box-shadow: 3px 3px 0 #000;
+    transition: all 0.2s ease;
+}
+.cinematic-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 #000;
+}
+body.comic-mode .cinematic-btn {
+    display: inline-block;
+}
+
+/* Cinematic View Mode */
+body.cinematic-active {
+    overflow: hidden; /* Prevent manual scrolling */
+}
+body.cinematic-active header {
+    display: none; /* Hide nav */
+}
+
+/* Letterboxing */
+body.cinematic-active::before,
+body.cinematic-active::after {
+    content: '';
+    position: fixed;
+    left: 0;
+    width: 100%;
+    height: 12vh;
+    background: #000;
+    z-index: 10001;
+    transition: transform 1s ease;
+}
+body.cinematic-active::before {
+    top: 0;
+    transform: translateY(-100%);
+}
+body.cinematic-active::after {
+    bottom: 0;
+    transform: translateY(100%);
+}
+body.cinematic-active.cinematic-bars-in::before,
+body.cinematic-active.cinematic-bars-in::after {
+    transform: translateY(0);
+}
+
+.cinematic-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.85) 100%);
+    z-index: 10000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+body.cinematic-active .cinematic-overlay {
+    opacity: 1;
+}
+
+.cinematic-title {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    font-family: 'Bangers', cursive;
+    font-size: 6rem;
+    color: #fff;
+    text-shadow: 4px 4px 0 #e30022, -2px -2px 0 #000;
+    z-index: 10002;
+    pointer-events: none;
+    opacity: 0;
+    transition: all 0.5s ease;
+    text-align: center;
+}
+.cinematic-title.show {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+
+/* Dramatic section focus */
+body.cinematic-active section {
+    transition: transform 3s ease-in-out, filter 1s ease;
+    filter: grayscale(30%) contrast(120%);
+}
+body.cinematic-active section.focus {
+    transform: scale(1.05);
+    filter: grayscale(0%) contrast(130%);
+}

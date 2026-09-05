@@ -383,3 +383,103 @@ window.addEventListener('scroll', () => {
 
     lastScrollTop = st <= 0 ? 0 : st;
 });
+
+// ============================================
+// CINEMATIC MODE
+// ============================================
+const cinematicBtn = document.getElementById('cinematic-btn');
+const overlay = document.createElement('div');
+overlay.className = 'cinematic-overlay';
+document.body.appendChild(overlay);
+
+const cineTitle = document.createElement('div');
+cineTitle.className = 'cinematic-title';
+document.body.appendChild(cineTitle);
+
+let isCinematic = false;
+let cinematicTimeout;
+let cinematicSequence = [];
+
+cinematicBtn.addEventListener('click', () => {
+    if (isCinematic) return;
+    isCinematic = true;
+    document.body.classList.add('cinematic-active');
+    
+    // Add bars with slight delay for dramatic effect
+    setTimeout(() => {
+        document.body.classList.add('cinematic-bars-in');
+    }, 100);
+
+    startCinematicSequence();
+});
+
+// Exit cinematic on escape or click anywhere
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isCinematic) {
+        exitCinematic();
+    }
+});
+overlay.addEventListener('click', () => {
+    if (isCinematic) {
+        exitCinematic();
+    }
+});
+
+function exitCinematic() {
+    isCinematic = false;
+    document.body.classList.remove('cinematic-active', 'cinematic-bars-in');
+    cinematicSequence.forEach(id => clearTimeout(id));
+    cinematicSequence = [];
+    cineTitle.classList.remove('show');
+    document.querySelectorAll('section').forEach(s => s.classList.remove('focus'));
+}
+
+function startCinematicSequence() {
+    const sections = [
+        { id: 'home', title: 'PART 1: THE ORIGIN' },
+        { id: 'about', title: 'PART 2: THE HERO' },
+        { id: 'skills', title: 'PART 3: THE ARSENAL' },
+        { id: 'projects', title: 'PART 4: THE MISSIONS' },
+        { id: 'contact', title: 'PART 5: THE SIGNAL' }
+    ];
+
+    let delay = 1000;
+
+    sections.forEach((sec, index) => {
+        cinematicSequence.push(setTimeout(() => {
+            if (!isCinematic) return;
+            
+            const sectionEl = document.getElementById(sec.id);
+            if (!sectionEl) return;
+
+            // Scroll to section
+            sectionEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Show dramatic title
+            cineTitle.textContent = sec.title;
+            cineTitle.classList.add('show');
+            sectionEl.classList.add('focus');
+
+            // Hide title after a few seconds
+            cinematicSequence.push(setTimeout(() => {
+                if (!isCinematic) return;
+                cineTitle.classList.remove('show');
+            }, 3000));
+
+            // Remove focus right before next section
+            cinematicSequence.push(setTimeout(() => {
+                if (!isCinematic) return;
+                sectionEl.classList.remove('focus');
+            }, 4800));
+
+        }, delay));
+
+        delay += 5000; // Next section every 5 seconds
+    });
+
+    // Exit at the very end
+    cinematicSequence.push(setTimeout(() => {
+        if (!isCinematic) return;
+        exitCinematic();
+    }, delay));
+}
