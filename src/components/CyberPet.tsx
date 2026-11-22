@@ -7,8 +7,12 @@ import {
   Heart, 
   ArrowDownRight, 
   RotateCcw, 
-  MessageCircle 
+  MessageCircle,
+  Volume2,
+  VolumeX,
+  Radio
 } from 'lucide-react';
+import { petAudio } from '../utils/petAudio';
 import { 
   PROFILE, 
   PROJECTS, 
@@ -19,6 +23,7 @@ import {
 } from '../data/portfolioData';
 
 type PetMood = 'idle' | 'happy' | 'thinking' | 'speaking' | 'love';
+type VoiceMode = 'beeps' | 'voice' | 'muted';
 
 interface ChatMessage {
   id: string;
@@ -47,12 +52,27 @@ const QUICK_PROMPTS = [
 export const CyberPet: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [mood, setMood] = useState<PetMood>('idle');
+  const [voiceMode, setVoiceMode] = useState<VoiceMode>('beeps');
+  const [isSpeakingAudio, setIsSpeakingAudio] = useState(false);
   const [showGreetingBubble, setShowGreetingBubble] = useState(true);
   const [messages, setMessages] = useState<ChatMessage[]>([INITIAL_MESSAGE]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [hearts, setHearts] = useState<number[]>([]);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  const cycleVoiceMode = () => {
+    setVoiceMode((prev) => {
+      const next: VoiceMode = prev === 'beeps' ? 'voice' : prev === 'voice' ? 'muted' : 'beeps';
+      if (next === 'muted') {
+        petAudio.stopSpeech();
+        setIsSpeakingAudio(false);
+      } else {
+        petAudio.playWakeBeep();
+      }
+      return next;
+    });
+  };
 
   // Auto-scroll chat to bottom
   useEffect(() => {
@@ -71,6 +91,9 @@ export const CyberPet: React.FC = () => {
     const id = Date.now();
     setHearts((prev) => [...prev, id]);
     setMood('love');
+    if (voiceMode !== 'muted') {
+      petAudio.playHappyPurr();
+    }
     setTimeout(() => {
       setHearts((prev) => prev.filter((h) => h !== id));
       setMood('idle');
@@ -246,6 +269,11 @@ export const CyberPet: React.FC = () => {
     setIsTyping(true);
     setMood('thinking');
 
+    if (voiceMode !== 'muted') {
+      petAudio.playUserSendBlip();
+      setTimeout(() => petAudio.playThinkingChirps(), 120);
+    }
+
     setTimeout(() => {
       const replyData = generateResponse(trimmed);
       const petMsg: ChatMessage = {
@@ -255,6 +283,19 @@ export const CyberPet: React.FC = () => {
       };
       setMessages((prev) => [...prev, petMsg]);
       setIsTyping(false);
+
+      if (voiceMode === 'beeps') {
+        petAudio.playRoboticSpeakCadence();
+        setIsSpeakingAudio(true);
+        setTimeout(() => setIsSpeakingAudio(false), 600);
+      } else if (voiceMode === 'voice') {
+        petAudio.playRoboticSpeakCadence();
+        petAudio.speakText(
+          replyData.text,
+          () => setIsSpeakingAudio(true),
+          () => setIsSpeakingAudio(false)
+        );
+      }
 
       setTimeout(() => {
         setMood((prev) => (prev === 'love' ? 'love' : 'idle'));
@@ -501,17 +542,52 @@ export const CyberPet: React.FC = () => {
                     <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-amber-500/15 text-amber-300 border border-amber-500/30">
                       AI PET
                     </span>
+                    {/* Live Audio Waveform Visualizer */}
+                    {isSpeakingAudio && (
+                      <div className="flex items-end gap-[2px] h-3 ml-1" aria-hidden="true">
+                        <motion.span animate={{ height: ['4px', '12px', '4px'] }} transition={{ duration: 0.35, repeat: Infinity }} className="w-[2px] bg-teal-cyber rounded-full" />
+                        <motion.span animate={{ height: ['8px', '4px', '11px'] }} transition={{ duration: 0.3, repeat: Infinity }} className="w-[2px] bg-amber-400 rounded-full" />
+                        <motion.span animate={{ height: ['5px', '12px', '5px'] }} transition={{ duration: 0.4, repeat: Infinity }} className="w-[2px] bg-teal-cyber rounded-full" />
+                      </div>
+                    )}
                   </div>
                   <span className="text-[10px] font-mono text-emerald-400 flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    {isTyping ? 'Thinking...' : mood === 'love' ? 'Happy & Purring!' : 'Online • Ask me anything'}
+                    {isTyping ? 'Processing...' : isSpeakingAudio ? 'Transmitting Audio...' : mood === 'love' ? 'Happy & Purring!' : 'Online • Voice Ready'}
                   </span>
                 </div>
               </div>
 
               <div className="flex items-center gap-1">
+                {/* Voice Mode Switcher */}
                 <button
-                  onClick={() => setMessages([INITIAL_MESSAGE])}
+                  onClick={cycleVoiceMode}
+                  className={`px-2 py-1 rounded-lg text-[10px] font-mono flex items-center gap-1 border transition-colors ${
+                    voiceMode === 'muted'
+                      ? 'text-slate-500 border-white/5 hover:text-slate-300'
+                      : voiceMode === 'voice'
+                      ? 'text-teal-300 bg-teal-cyber/15 border-teal-cyber/30'
+                      : 'text-amber-300 bg-amber-500/15 border-amber-500/30'
+                  }`}
+                  title="Switch audio mode: Beeps / Voice + Beeps / Muted"
+                  aria-label="Toggle Byte voice mode"
+                >
+                  {voiceMode === 'muted' ? (
+                    <VolumeX size={13} />
+                  ) : voiceMode === 'voice' ? (
+                    <Radio size={13} className="animate-pulse" />
+                  ) : (
+                    <Volume2 size={13} />
+                  )}
+                  <span className="hidden sm:inline capitalize">{voiceMode}</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    petAudio.stopSpeech();
+                    setIsSpeakingAudio(false);
+                    setMessages([INITIAL_MESSAGE]);
+                  }}
                   className="p-1.5 rounded-lg text-slate-400 hover:text-amber-300 hover:bg-white/5 transition-colors"
                   title="Reset conversation"
                   aria-label="Reset conversation"
@@ -519,7 +595,11 @@ export const CyberPet: React.FC = () => {
                   <RotateCcw size={15} />
                 </button>
                 <button
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => {
+                    petAudio.stopSpeech();
+                    setIsSpeakingAudio(false);
+                    setIsOpen(false);
+                  }}
                   className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
                   title="Minimize Byte"
                   aria-label="Minimize chat"
@@ -637,8 +717,15 @@ export const CyberPet: React.FC = () => {
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.94 }}
           onClick={() => {
-            setIsOpen((prev) => !prev);
+            const nextOpen = !isOpen;
+            setIsOpen(nextOpen);
             setShowGreetingBubble(false);
+            if (nextOpen && voiceMode !== 'muted') {
+              petAudio.playWakeBeep();
+            } else if (!nextOpen) {
+              petAudio.stopSpeech();
+              setIsSpeakingAudio(false);
+            }
           }}
           className="relative w-16 h-16 rounded-2xl bg-obsidian-850/90 backdrop-blur-xl border border-amber-500/40 shadow-[0_8px_30px_rgba(245,158,11,0.28)] hover:border-amber-400 flex items-center justify-center group transition-colors"
           aria-label="Toggle Byte AI Pet Chat"
