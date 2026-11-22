@@ -1,10 +1,21 @@
 /**
- * Web Audio API Robotic Beep & Speech Synthesizer for Byte AI Pet.
+ * Web Audio API Robotic Beep, UI Interaction SFX & Speech Synthesizer.
  * Zero external audio assets required; generates crisp, click-free cyber tones.
  */
 
 class PetAudioEngine {
   private ctx: AudioContext | null = null;
+  private uiMuted = false;
+  private lastScrollTick = 0;
+
+  constructor() {
+    if (typeof window !== 'undefined') {
+      const saved = window.localStorage.getItem('prismatix4_ui_sfx_muted');
+      if (saved === 'true') {
+        this.uiMuted = true;
+      }
+    }
+  }
 
   private getContext(): AudioContext | null {
     if (typeof window === 'undefined') return null;
@@ -20,6 +31,20 @@ class PetAudioEngine {
       this.ctx.resume().catch(() => {});
     }
     return this.ctx;
+  }
+
+  public isUiAudioMuted(): boolean {
+    return this.uiMuted;
+  }
+
+  public setUiAudioMuted(muted: boolean) {
+    this.uiMuted = muted;
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('prismatix4_ui_sfx_muted', String(muted));
+    }
+    if (!muted) {
+      this.playUiSwitch(true);
+    }
   }
 
   private playTone(
@@ -45,7 +70,7 @@ class PetAudioEngine {
 
     // Smooth ADSR envelope to prevent audio clicks
     gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(volume, now + 0.012);
+    gain.gain.exponentialRampToValueAtTime(volume, now + 0.008);
     gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
 
     osc.connect(gain);
@@ -54,6 +79,45 @@ class PetAudioEngine {
     osc.start(now);
     osc.stop(now + duration + 0.02);
   }
+
+  // ==========================================
+  // Global UI Interaction Sound Effects
+  // ==========================================
+
+  /** Crisp tactile cyber micro-click for buttons & links */
+  playUiClick() {
+    if (this.uiMuted) return;
+    this.playTone(940, 0.032, 0, 'triangle', 0.032, 620);
+  }
+
+  /** Soft dual-tone switch for tabs, toggles & filters */
+  playUiSwitch(force = false) {
+    if (this.uiMuted && !force) return;
+    this.playTone(680, 0.035, 0, 'sine', 0.032, 920);
+    this.playTone(980, 0.04, 0.03, 'triangle', 0.028);
+  }
+
+  /** Ultra-subtle throttled cyber tick during scrolling */
+  playScrollTick() {
+    if (this.uiMuted) return;
+    const now = performance.now();
+    if (now - this.lastScrollTick < 180) return;
+    this.lastScrollTick = now;
+    this.playTone(460, 0.022, 0, 'sine', 0.016, 580);
+  }
+
+  /** Distinct chime when scrolling into a new portfolio section */
+  playSectionEnter() {
+    if (this.uiMuted) return;
+    const now = performance.now();
+    if (now - this.lastScrollTick < 260) return;
+    this.lastScrollTick = now;
+    this.playTone(580, 0.045, 0, 'triangle', 0.025, 760);
+  }
+
+  // ==========================================
+  // Byte AI Pet Sound Effects
+  // ==========================================
 
   /** Cute wake-up chime when opening Byte */
   playWakeBeep() {

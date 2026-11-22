@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { ExternalLink, Menu, X, Terminal, Cpu, Activity } from 'lucide-react';
+import { ExternalLink, Menu, X, Terminal, Cpu, Activity, Volume2, VolumeX } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PROFILE } from '../data/portfolioData';
+import { petAudio } from '../utils/petAudio';
 
 export const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [sfxMuted, setSfxMuted] = useState(() => petAudio.isUiAudioMuted());
+
+  const toggleSfx = () => {
+    const nextMuted = !sfxMuted;
+    setSfxMuted(nextMuted);
+    petAudio.setUiAudioMuted(nextMuted);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -116,8 +124,23 @@ export const Navbar: React.FC = () => {
             })}
           </div>
 
-          {/* Right Status Badge & External Collective Pill */}
-          <div className="hidden lg:flex items-center gap-3">
+          {/* Right Status Badge, SFX Toggle & External Collective Pill */}
+          <div className="hidden lg:flex items-center gap-2.5">
+            <button
+              onClick={toggleSfx}
+              data-sfx-toggle="true"
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] font-mono transition-all ${
+                sfxMuted
+                  ? 'bg-slate-900/60 border-white/10 text-slate-500 hover:text-slate-300'
+                  : 'bg-teal-cyber/10 border-teal-cyber/30 text-teal-300 hover:bg-teal-cyber/20'
+              }`}
+              title={sfxMuted ? 'Enable Cyber UI Sound Effects' : 'Mute Cyber UI Sound Effects'}
+              aria-label="Toggle UI sound effects"
+            >
+              {sfxMuted ? <VolumeX size={12} /> : <Volume2 size={12} />}
+              <span>{sfxMuted ? 'SFX OFF' : 'SFX ON'}</span>
+            </button>
+
             <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-[11px] font-mono text-emerald-400">
               <Activity size={12} className="animate-pulse" />
               <span>SYSTEMS ONLINE</span>
@@ -135,8 +158,20 @@ export const Navbar: React.FC = () => {
             </a>
           </div>
 
-          {/* Mobile Menu Toggle Button */}
-          <div className="md:hidden flex items-center">
+          {/* Mobile SFX & Menu Toggle Buttons */}
+          <div className="md:hidden flex items-center gap-2">
+            <button
+              onClick={toggleSfx}
+              data-sfx-toggle="true"
+              className={`p-2 rounded-xl border transition-colors ${
+                sfxMuted
+                  ? 'bg-obsidian-850 border-white/10 text-slate-500'
+                  : 'bg-teal-cyber/10 border-teal-cyber/30 text-teal-300'
+              }`}
+              aria-label="Toggle UI sound effects"
+            >
+              {sfxMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+            </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-xl bg-obsidian-850 border border-amber-500/30 text-amber-400 hover:border-amber-400 transition-colors focus:outline-none"

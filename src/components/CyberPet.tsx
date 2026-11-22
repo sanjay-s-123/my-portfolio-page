@@ -514,7 +514,7 @@ export const CyberPet: React.FC = () => {
   );
 
   return (
-    <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end">
+    <div data-pet-container="true" className="fixed bottom-5 right-5 z-50 flex flex-col items-end">
       
       {/* Expanded Chat Window */}
       <AnimatePresence>

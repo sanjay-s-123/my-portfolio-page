@@ -12,6 +12,7 @@ import { Leadership } from './components/Leadership';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { CyberPet } from './components/CyberPet';
+import { UiSoundController } from './components/UiSoundController';
 
 export const App: React.FC = () => {
   const [showSplash, setShowSplash] = useState(true);
@@ -59,8 +60,13 @@ export const App: React.FC = () => {
         <Footer />
       </motion.div>
 
-      {/* Cute Interactive AI Companion Pet */}
-      {!showSplash && <CyberPet />}
+      {/* Cute Interactive AI Companion Pet & Global UI SFX */}
+      {!showSplash && (
+        <>
+          <UiSoundController />
+          <CyberPet />
+        </>
+      )}
     </div>
   );
 };
