@@ -277,3 +277,153 @@ export const PRISMATIX4_INFO = {
   ],
   hubUrl: "https://prismatix4.vercel.app/"
 };
+
+export interface MilestoneItem {
+  period: string;
+  role: string;
+  entity: string;
+  badge: string;
+  description: string;
+  highlights: string[];
+  technologies: string[];
+}
+
+export const MILESTONES: MilestoneItem[] = [
+  {
+    period: "2024 — PRESENT",
+    role: "Founder & Lead Systems Architect",
+    entity: "PRISMATIX4 Technology Collective",
+    badge: "Active Leadership",
+    description: "Founded and directing the 4-engineer tech collective building production-grade, human-centric intelligent software spanning voice agents, WebRTC ecosystems, and virtual hardware laboratories.",
+    highlights: [
+      "Steering technical architecture across 4 flagship production engines.",
+      "Engineered autonomous lockscreen voice trigger pipelines and low-latency audio sync.",
+      "Maintained 99.9% uptime architecture across all distributed deployed microservices."
+    ],
+    technologies: ["Autonomous AI", "NestJS", "WebRTC", "Flutter", "WebAssembly", "PostgreSQL"]
+  },
+  {
+    period: "2024",
+    role: "Lead Systems Architect & Core Developer",
+    entity: "SARA — Autonomous Voice AI & Life OS",
+    badge: "Flagship Engine",
+    description: "Spearheaded the creation of an autonomous proactive voice agent that wakes mobile lockscreens via VoIP/CallKit for scheduled two-way conversational check-ins.",
+    highlights: [
+      "Engineered duplex voice turnaround latency under 320ms with Whisper STT and Neural TTS.",
+      "Architected persistent context vector memory for multi-domain life habit tracking."
+    ],
+    technologies: ["Whisper STT", "Neural TTS", "CallKit / VoIP", "NestJS", "Vector DB"]
+  },
+  {
+    period: "2023 — 2024",
+    role: "Full-Stack Mobile & Media Pipeline Architect",
+    entity: "SNAP — Personal Care Network",
+    badge: "Production Launch",
+    description: "Architected cross-platform assistive healthcare application with dual-role caregiver/receiver interfaces, sub-50ms distress broadcasts, and encrypted WebRTC video calls.",
+    highlights: [
+      "Deployed signaling gateway with STUN/TURN fallback traversal across restrictive firewalls.",
+      "Collaborated on bilingual English/Tamil dynamic localization runtime."
+    ],
+    technologies: ["Flutter", "Dart", "WebRTC", "Socket.IO", "Prisma", "PostgreSQL"]
+  },
+  {
+    period: "2023",
+    role: "Virtual Simulation Engine Developer",
+    entity: "PhySense & Embedded Research",
+    badge: "Simulation R&D",
+    description: "Pioneered in-browser WebAssembly hardware interpretation enabling students to test virtual ESP32/Arduino microcontrollers and electronic sensors before physical circuit assembly.",
+    highlights: [
+      "Compiled AVR/Xtensa instruction interpreters into 60 FPS WebAssembly runtimes.",
+      "Engineered real-time virtual 2-channel oscilloscope with microsecond pulse analysis."
+    ],
+    technologies: ["WebAssembly", "C/C++", "ESP32", "Arduino", "HTML5 Canvas"]
+  }
+];
+
+export interface CollectiveNode {
+  id: string;
+  name: string;
+  role: string;
+  specialty: string;
+  color: string;
+  glow: string;
+  portfolioUrl: string;
+  github: string;
+  linkedin: string;
+  badge: string;
+}
+
+export const COLLECTIVE_NODES: CollectiveNode[] = [
+  {
+    id: "sanjay",
+    name: "Sanjay S",
+    role: "Founder & Lead Architect",
+    specialty: "Systems Architecture, Autonomous Agents & Real-Time WebRTC Networks",
+    color: "#F59E0B",
+    glow: "rgba(245, 158, 11, 0.35)",
+    portfolioUrl: "#home",
+    github: "https://github.com/sanjay-s-123",
+    linkedin: "https://www.linkedin.com/in/sanjay-s-tech/",
+    badge: "COLLECTIVE LEAD"
+  },
+  {
+    id: "prithic",
+    name: "Prithic P",
+    role: "Co-Founder & Backend Lead",
+    specialty: "Distributed NestJS Microservices, Database Mesh & Cloud Reliability",
+    color: "#38BDF8",
+    glow: "rgba(56, 189, 248, 0.35)",
+    portfolioUrl: "https://prithicp-prismatix4.vercel.app/",
+    github: "https://github.com/Prithic",
+    linkedin: "https://www.linkedin.com/in/prithic-p/",
+    badge: "GOOGLE STUDENT AMBASSADOR"
+  },
+  {
+    id: "vasundara",
+    name: "Vasundara Devi G",
+    role: "Co-Founder & Frontend Lead",
+    specialty: "Fluid Flutter Mobile Apps, Senior Ergonomics & Design Systems",
+    color: "#34D399",
+    glow: "rgba(52, 211, 153, 0.35)",
+    portfolioUrl: "https://vasundaradevig-prismatix4.vercel.app/",
+    github: "https://github.com/Vasundara-Devi-123",
+    linkedin: "https://www.linkedin.com/in/vasundara-devi-g-329bb4369/",
+    badge: "ACCESSIBLE UX SPECIALIST"
+  },
+  {
+    id: "vivina",
+    name: "Vivina S",
+    role: "Co-Founder & ML/R&D Lead",
+    specialty: "Real-Time Voice Intelligence, Whisper STT/TTS & Applied Research",
+    color: "#FBBF24",
+    glow: "rgba(251, 191, 36, 0.35)",
+    portfolioUrl: "https://vivinas-prismatix4.vercel.app/",
+    github: "https://github.com/viv-07",
+    linkedin: "https://www.linkedin.com/in/vivina-s-8968bb395/",
+    badge: "ROTRACTOR LEADER"
+  }
+];
+
+export const CERTIFICATIONS = [
+  {
+    title: "Distributed Systems & Cloud Microservices",
+    issuer: "Enterprise Architecture Specialization",
+    date: "2024",
+    badge: "System Design",
+    description: "High-concurrency microservice choreography, message brokers, and sub-50ms fault recovery."
+  },
+  {
+    title: "Applied Machine Learning & Neural Voice Pipelines",
+    issuer: "AI Research & Speech Engineering",
+    date: "2024",
+    badge: "Voice AI & LLM",
+    description: "Real-time streaming speech chunking, neural acoustic vocoders, and context vector embeddings."
+  },
+  {
+    title: "Embedded Firmware & Real-Time Operating Systems",
+    issuer: "FreeRTOS & Low-Level IoT Architecture",
+    date: "2023",
+    badge: "Embedded / WASM",
+    description: "ESP32 dual-core task scheduling, hardware interrupt handling, and in-browser WebAssembly emulation."
+  }
+];
