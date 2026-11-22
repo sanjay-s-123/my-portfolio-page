@@ -11,6 +11,7 @@ import { Milestones } from './components/Milestones';
 import { Leadership } from './components/Leadership';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
+import { CyberPet } from './components/CyberPet';
 
 export const App: React.FC = () => {
   const [showSplash, setShowSplash] = useState(true);
@@ -57,6 +58,9 @@ export const App: React.FC = () => {
         {/* Modern Footer */}
         <Footer />
       </motion.div>
+
+      {/* Cute Interactive AI Companion Pet */}
+      {!showSplash && <CyberPet />}
     </div>
   );
 };
